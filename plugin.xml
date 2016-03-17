@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schema.android.com/apk/res/android" id="cordova-plugin-file-node-like" version="1.0.0">
+	<name>Curve25519</name>
+	<description>
+		A wrapper for cordova-plugin-file, that provides a Node.js-like API
+	</description>
+
+	<license>MIT</license>
+	<keywords>file,io,nodejs</keywords>
+	<engines>
+		<engine name="cordova" version=">=3.0.0" />
+	</engines>
+
+	<js-module name="StorageManager" src="www/StorageManager.js">
+		<clobbers target="window.plugins.nodefs"/>
+	</js-module>
+</plugin>

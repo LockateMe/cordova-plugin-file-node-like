@@ -1,0 +1,40 @@
+{
+  "name": "cordova-plugin-file-node-like",
+  "version": "1.0.0",
+  "description": "A wrapper for cordova-plugin-file, providing a Nodejs-like API",
+  "main": "index.js",
+  "cordova": {
+    "id": "cordova-plugin-file-node-like",
+    "platforms": [
+      "ios",
+      "android"
+    ]
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LockateMe/cordova-plugin-file-node-like.git"
+  },
+  "keywords": [
+    "file",
+    "io",
+    "nodejs"
+  ],
+  "author": "Ahmad Benmrad",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/LockateMe/cordova-plugin-file-node-like/issues"
+  },
+  "homepage": "https://github.com/LockateMe/cordova-plugin-file-node-like#readme",
+  "dependencies": {
+    "cordova-plugin-file": "^4.1.1"
+  },
+  "devDependencies": {
+    "cordova-plugin-test-framework": "^1.1.1"
+  }
+}
