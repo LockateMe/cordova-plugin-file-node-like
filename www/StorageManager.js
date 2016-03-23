@@ -626,7 +626,7 @@ function StorageManager(fsRoot){
 			};*/
 
 			if (typeof cb == 'function') cb(msg);
-			console.error('FS error: ' + msg);
+			//console.error('FS error: ' + msg);
 		}
 	}
 
