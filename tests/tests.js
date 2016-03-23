@@ -90,6 +90,264 @@ exports.defineAutoTests = function(){
 
 	});
 
+	describe('recursive directory creation', function(){
+
+		it('should throw an error when creating nested folders, non-recursively', function(done){
+			fs.mkdir('testDir/dir1/dir2', function(err){
+				expect(err).toBeDefined();
+
+				done();
+			});
+		});
+
+		it('should create nested directories', function(done){
+			fs.mkdirp('testDir/dir1/dir2', function(err){
+				expect(!!err).toBe(false);
+
+				done();
+			});
+		});
+
+		it('should find nested directories', function(done){
+			fs.readdir('testDir/dir1', function(err, contents){
+				expect(!!err).toBe(false);
+
+				expect(Array.isArray(contents)).toBe(true);
+				expect(contents.length).toEqual(1);
+
+				expect(contents).toContain('dir2');
+
+				done();
+			});
+		});
+
+	});
+
+	describe('recursive directory deletion', function(){
+
+		it('should throw an error when deleting nested folders, non-recursively', function(done){
+			fs.rmdir('testDir', function(err){
+				expect(err).toBeDefined();
+
+				done();
+			});
+		});
+
+		it('should delete nested directories', function(done){
+			fs.rmdirr('testDir', function(err){
+				expect(!!err).toBe(false);
+
+				done();
+			});
+		});
+
+	});
+
+	describe('file write', function(){
+
+		it('should write a file', function(done){
+			fs.writeFile('testFile', 'Testing the files stuff\r\n', function(err){
+				expect(!!err).toBe(false);
+
+				done();
+			});
+		});
+
+		it('should exist', function(done){
+			fs.exists('testFile', function(exists){
+				expect(exists).toBe(true);
+
+				done();
+			});
+		});
+
+		it('should be a file', function(done){
+			fs.stat('testFile', function(err, s){
+				expect(!!err).toBe(false);
+
+				expect(typeof s == 'object').toBe(true);
+				expect(typeof s.isDirectory == 'boolean').toBe(true);
+				expect(typeof s.isFile == 'boolean').toBe(true);
+
+				expect(s.isDirectory).toBe(false);
+				expect(s.isFile).toBe(true);
+
+				done();
+			});
+		});
+
+		it('should contain data', function(done){
+			fs.readFile('testFile', function(err, d){
+				expect(!!err).toBe(false);
+
+				expect(typeof d == 'string').toBe(true);
+				expect(d).toEqual('Testing the files stuff\r\n');
+
+				done();
+			});
+		});
+
+	});
+
+	describe('file append', function(){
+
+		it('appending data to an unexistant file', function(done){
+			fs.appendFile('ghostFile', 'Whatever', function(err){
+				expect(!!err).toBe(false);
+
+				done();
+			});
+		});
+
+		it('the unexistant file should now exist', function(done){
+			fs.exists('ghostFile', function(exists){
+				expect(exists).toBe(true);
+
+				done();
+			});
+		});
+
+		it('should be a file', function(done){
+			fs.stat('ghostFile', function(err, s){
+				expect(!!err).toBe(false);
+
+				expect(typeof s == 'object').toBe(true);
+				expect(typeof s.isDirectory == 'boolean').toBe(true);
+				expect(typeof s.isFile == 'boolean').toBe(true);
+
+				expect(s.isDirectory).toBe(false);
+				expect(s.isFile).toBe(true);
+
+				done();
+			});
+		});
+
+		it('the now-existing file should contain data', function(done){
+			fs.readFile('ghostFile', function(err, d){
+				expect(!!err).toBe(false);
+
+				expect(typeof d == 'string').toBe(true);
+				expect(d).toEqual('Whatever');
+
+				done();
+			})
+		});
+
+		it('appending data to an existing file', function(done){
+			fs.appendFile('testFile', 'Whatever', function(err){
+				expect(!!err).toBe(false);
+
+				done();
+			});
+		});
+
+		it('the existing file should have appended data', function(done){
+			fs.readFile('testFile', function(err, d){
+				expect(!!err).toBe(false);
+
+				expect(typeof d == 'string').toBe(true);
+				expect(d).toEqual('Testing the files stuff\r\nWhatever');
+
+				done();
+			});
+		});
+
+	});
+
+	describe('file deletion', function(){
+
+		it('should delete a file', function(done){
+			fs.unlink('testFile', function(err){
+				expect(!!err).toBe(false);
+
+				done();
+			});
+		});
+
+		it('should not exist anymore', function(done){
+			fs.exists('testFile', function(exists){
+				expect(exists).toBe(false);
+
+				done();
+			});
+		});
+
+		it('should delete an other file', function(done){
+			fs.unlink('ghostFile', function(err){
+				expect(!!err).toBe(false);
+
+				done();
+			});
+		});
+
+		it('should not exist anymore', function(done){
+			fs.exists('ghostFile', function(exists){
+				expect(exists).toBe(false);
+
+				done();
+			});
+		});
+
+	});
+
+	describe('buffer write', function(){
+
+		it('should write a buffer to a file', function(done){
+			var b = string_to_Uint8Array('Testing buffers\r\nWhatever');
+			fs.writeFile('bufferFile', b, function(err){
+				expect(!!err).toBe(false);
+
+				done();
+			});
+		});
+
+		it('should contain data', function(done){
+			fs.readFile('bufferFile', function(err, b){
+				expect(!!err).toBe(false);
+
+				expect(uint8Array_to_String(b)).toEqual('Testing buffers\r\nWhatever');
+
+				done();
+			}, true);
+		});
+
+		it('should append a buffer to a file', function(done){
+			var b = string_to_Uint8Array('\r\nLike, really whatever');
+			fs.appendFile('bufferFile', b, function(err){
+				expect(!!err).toBe(false);
+
+				done();
+			});
+		});
+
+		it('should contain appended data', function(done){
+			fs.readFile('bufferFile', function(err, b){
+				expect(!!err).toBe(false);
+
+				expect(uint8Array_to_String(b)).toEqual('Testing buffers\r\nWhatever\r\nLike, really whatever');
+
+				done();
+			}, true);
+		});
+
+		it('deletes the file', function(done){
+			fs.unlink('bufferFile', function(err){
+				expect(!!err).toBe(false);
+
+				done();
+			});
+		});
+
+		it('should not exist', function(done){
+			fs.exists('bufferFile', function(exists){
+				expect(exists).toBe(false);
+
+				done();
+			});
+		});
+
+	});
+
 };
 
 /*
@@ -368,6 +626,11 @@ function deleteAll(callback){
 				if (typeof callback == 'function') callback(foundErr);
 				else if (err) throw err;
 			}
+		}
+
+		if (currentFiles.length == 0){
+			callback();
+			return;
 		}
 
 		for (var i = 0; i < currentFiles.length; i++){
