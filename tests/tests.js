@@ -252,6 +252,24 @@ exports.defineAutoTests = function(){
 			});
 		});
 
+		it('should overwrite the file\'s contents', function(done){
+			fs.writeFile('testFile', 'Whatever', function(err){
+				expect(!!err).toBe(false);
+
+				done();
+			});
+		});
+
+		it('should have overwritten the data', function(done){
+			fs.readFile('testFile', function(err, d){
+				expect(!!err).toBe(false);
+
+				expect(d).toEqual('Whatever');
+
+				done();
+			});
+		});
+
 	});
 
 	describe('file deletion', function(){
