@@ -143,6 +143,25 @@ exports.defineAutoTests = function(){
 
 	});
 
+	describe('file existence', function(){
+
+		it('should not exist', function(done){
+			fs.exists('thing', function(exists){
+				expect(exists).toBe(false);
+
+				done();
+			});
+		});
+
+		it('should not exist, again', function(done){
+			fs.exists('thing', function(exists){
+				expect(exists).toBe(false);
+
+				done();
+			});
+		});
+	});
+
 	describe('file write', function(){
 
 		it('should write a file', function(done){
