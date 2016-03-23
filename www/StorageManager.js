@@ -7,10 +7,10 @@ function initializeFS(callback){
 		window._fs = fileSystem;
 		window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function(dataDir){
 			window._fs = dataDir;
-			console.log('_fs has been set up');
+			//console.log('_fs has been set up');
 			window.resolveLocalFileSystemURL(cordova.file.cacheDirectory, function(cacheDir){
 				window._cacheFs = cacheDir;
-				console.log('_cacheFs has been set up');
+				//console.log('_cacheFs has been set up');
 				if (typeof callback == 'function') callback();
 			}, err);
 		}, err);
