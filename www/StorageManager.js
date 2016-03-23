@@ -289,6 +289,15 @@ function StorageManager(fsRoot){
 		if (typeof filename != 'string') throw new TypeError('filename must be a string');
 		if (typeof callback != 'function') throw new TypeError('callback must be a function');
 
+		if (typeof asBuffer == 'string'){
+			if (asBuffer == 'binary') asBuffer = true;
+			else if (asBuffer == 'utf8') asBuffer = false;
+			else {
+				callback('Invalid encoding: ' + asBuffer);
+				return;
+			}
+		}
+
 		ioQueue.push({type: 'read', path: filename, asBuffer: asBuffer, cb: callback});
 		ioQueueProcessing();
 

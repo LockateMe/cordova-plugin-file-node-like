@@ -42,10 +42,10 @@ window.plugins.nodefs.init(function(err){
 * String|Uint8Array data : the data to be stored
 * Function cb(err) : a callback function, receiving error `err` if one occurred
 
-`fs.readFile(path, cb, [asBuffer])` : Read data at the given path
+`fs.readFile(path, cb, [encoding])` : Read data at the given path
 * String path : the path of the file to be read
 * Function cb(err, data) : a callback function, receiving the read data (in `data`). receiving error `err` if one occurred
-* Boolean asBuffer : an optional boolean, indicating whether the file should be read as an Uint8Array or not
+* String encoding : optional string. Defaults to 'utf8'. Accepted values: 'binary' to get a Uint8Array, 'utf8' to get a string
 
 `fs.exists(path, cb)` : Check whether a file or directory exists at the given
 * String path : the path to be tested
