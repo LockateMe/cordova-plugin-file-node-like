@@ -42,10 +42,10 @@ window.plugins.nodefs.init(function(err){
 * String|Uint8Array data : the data to be stored
 * Function cb(err) : a callback function, receiving error `err` if one occurred
 
-`fs.readFile(path, cb, [encoding])` : Read data at the given path
+`fs.readFile(path, [encoding], cb)` : Read data at the given path
 * String path : the path of the file to be read
+* String encoding : optional string. Defaults to 'buffer'. Accepted values: 'buffer' to get a Uint8Array, 'utf8' to get a string
 * Function cb(err, data) : a callback function, receiving the read data (in `data`). receiving error `err` if one occurred
-* String encoding : optional string. Defaults to 'utf8'. Accepted values: 'binary' to get a Uint8Array, 'utf8' to get a string
 
 `fs.exists(path, cb)` : Check whether a file or directory exists at the given
 * String path : the path to be tested
@@ -59,7 +59,7 @@ window.plugins.nodefs.init(function(err){
 * String path : path of the directory to be created
 * Function cb(err) : a callback function. Receives error `err` if one occurred
 
-`fs.mkdirp(path, cb)` : Create a directory, with its parent directories if they do not exist
+`fs.mkdirp(path, cb)` : Create a directory, with its parent directories if they do not exist. Purpose : replace the `mkdirp` package
 * String path : path of the directory to be created
 * Function cb(err) : a callback function. Receives error `err` if one occurred
 
@@ -78,7 +78,7 @@ __NOTE:__ `fs.mkdirp` is not a standard function in the `fs` module of Node.js
 * String path : path of the directory to be deleted
 * Function cb(err) : a callback function, receiving error `err` if one occurred
 
-`fs.rmdirr(path, cb)` : Delete a directory and its contents
+`fs.rmdirr(path, cb)` : Delete a directory and its contents : replace the `rmdir` package
 * String path : path of the directory to be deleted
 * Function cb(err) : a callback function, receiving error `err` if one occurred
 

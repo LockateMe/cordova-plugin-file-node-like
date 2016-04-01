@@ -283,15 +283,28 @@ function StorageManager(fsRoot){
 	* Asynchronously read the content of a local file
 	* @private
 	* @param {String} filename - name of the file to be read
+	* @param {String} [encoding] - "buffer" or "utf8". Optional
 	* @param {Function} callback - callback function that will receive (err, contentStr)
 	*/
-	sm.readFile = function(filename, callback, asBuffer){
+	sm.readFile = function(filename, _encodingOrCallback, _callback){
 		if (typeof filename != 'string') throw new TypeError('filename must be a string');
-		if (typeof callback != 'function') throw new TypeError('callback must be a function');
 
-		if (typeof asBuffer == 'string'){
-			if (asBuffer == 'binary') asBuffer = true;
-			else if (asBuffer == 'utf8') asBuffer = false;
+		var encoding, callback;
+		if (typeof _encodingOrCallback == 'string'){
+			//If an encoding argument is provided, the following one must be the callback, hence a function
+			if (typeof _callback != 'function') throw new TypeError('callback must be a function');
+
+			encoding = _encodingOrCallback;
+			callback = _callback;
+		} else if (typeof _encodingOrCallback == 'function'){
+			callback = _encodingOrCallback;
+		}
+
+		var asBuffer = true;
+
+		if (typeof encoding == 'string'){
+			if (encoding == 'buffer') asBuffer = true;
+			else if (encoding == 'utf8') asBuffer = false;
 			else {
 				callback('Invalid encoding: ' + asBuffer);
 				return;

@@ -196,7 +196,7 @@ exports.defineAutoTests = function(){
 		});
 
 		it('should contain data', function(done){
-			fs.readFile('testFile', function(err, d){
+			fs.readFile('testFile', 'utf8', function(err, d){
 				expect(!!err).toBe(false);
 
 				expect(typeof d == 'string').toBe(true);
@@ -242,14 +242,14 @@ exports.defineAutoTests = function(){
 		});
 
 		it('the now-existing file should contain data', function(done){
-			fs.readFile('ghostFile', function(err, d){
+			fs.readFile('ghostFile', 'utf8', function(err, d){
 				expect(!!err).toBe(false);
 
 				expect(typeof d == 'string').toBe(true);
 				expect(d).toEqual('Whatever');
 
 				done();
-			})
+			});
 		});
 
 		it('appending data to an existing file', function(done){
@@ -261,7 +261,7 @@ exports.defineAutoTests = function(){
 		});
 
 		it('the existing file should have appended data', function(done){
-			fs.readFile('testFile', function(err, d){
+			fs.readFile('testFile', 'utf8', function(err, d){
 				expect(!!err).toBe(false);
 
 				expect(typeof d == 'string').toBe(true);
@@ -280,7 +280,7 @@ exports.defineAutoTests = function(){
 		});
 
 		it('should have overwritten the data', function(done){
-			fs.readFile('testFile', function(err, d){
+			fs.readFile('testFile', 'utf8', function(err, d){
 				expect(!!err).toBe(false);
 
 				expect(d).toEqual('Whatever');
@@ -345,7 +345,7 @@ exports.defineAutoTests = function(){
 				expect(uint8Array_to_String(b)).toEqual('Testing buffers\r\nWhatever');
 
 				done();
-			}, true);
+			});
 		});
 
 		it('should append a buffer to a file', function(done){
@@ -364,7 +364,7 @@ exports.defineAutoTests = function(){
 				expect(uint8Array_to_String(b)).toEqual('Testing buffers\r\nWhatever\r\nLike, really whatever');
 
 				done();
-			}, true);
+			});
 		});
 
 		it('deletes the file', function(done){
