@@ -1,24 +1,63 @@
-function initializeFS(callback){
-	window._fs = cordova.file.dataDirectory;
-	window._cacheFs = cordova.file.cacheDirectory;
+function initializeFS(callback, hostObject){
 	window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, boundFS, err);
 
+	hostObject = hostObject || window;
+	if (!(hostObject && typeof hostObject == 'object')) throw new TypeError('hostObject must be a defined object');
+
+	var resolveFsNames = {
+		dataDirectory: '_fs',
+		syncedDataDirectory: '_syncedFs',
+		cacheDirectory: '_cacheFs',
+		applicationDirectory: '_appFs',
+		applicationStorageDirectory: '_appStorageFs',
+		externalApplicationStorageDirectory: '_externalAppStorageFs',
+		externalDataDirectory: '_externalFs',
+		externalCacheDirectory: '_externalCacheFs',
+		externalRootDirectory: '_externalRootFs',
+		tempDirectory: '_tempFs',
+		documentsDirectory: '_documentsFs',
+		sharedDirectory: '_sharedFs'
+	};
+
 	function boundFS(fileSystem){
-		window._fs = fileSystem;
-		window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function(dataDir){
-			window._fs = dataDir;
-			//console.log('_fs has been set up');
-			window.resolveLocalFileSystemURL(cordova.file.cacheDirectory, function(cacheDir){
-				window._cacheFs = cacheDir;
-				//console.log('_cacheFs has been set up');
-				if (typeof callback == 'function') callback();
+
+		var fsToResolve = Object.keys(resolveFsNames);
+		var resolveIndex = 0;
+
+		function resolveOne(){
+			var currentFsName = fsToResolve[resolveIndex];
+
+			if (!cordova.file[currentFsName]){ //Skipping unavailable directories
+				console.log('[FS:init] ' + currentFsName + ' is unavailable. Skipping');
+				next();
+				return;
+			}
+
+			window.resolveLocalFileSystemURL(cordova.file[currentFsName], function(fsDir){
+				var fsAlias = resolveFsNames[currentFsName];
+				hostObject[fsAlias] = fsDir;
+
+				next();
 			}, err);
-		}, err);
+		}
+
+		function next(){
+			resolveIndex++;
+			if (resolveIndex < fsToResolve.length){
+				resolveOne();
+			} else {
+				if (typeof callback == 'function') callback();
+			}
+		}
+
+		resolveOne();
+
 	}
 
-	function err(err){
-		console.error('Error on cordova-plugin-file-node-like initialization: ' + JSON.stringify(err));
-		callback(err);
+	function err(_err){
+		console.error('Error on cordova-plugin-file-node-like initialization: ' + JSON.stringify(_err));
+		if (typeof callback == 'function') callback(_err);
+		else throw _err;
 	}
 }
 

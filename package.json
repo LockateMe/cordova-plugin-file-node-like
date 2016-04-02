@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-file-node-like",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A wrapper for cordova-plugin-file, providing a Nodejs-like API",
   "main": "index.js",
   "cordova": {

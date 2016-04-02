@@ -2,6 +2,8 @@
 
 A wrapper for [cordova-plugin-file](https://github.com/apache/cordova-plugin-file) that provides a Node.js-like API.
 
+Tested on iOS and Android.
+
 ## Why?
 
 * Because the API provided by [cordova-plugin-file](https://github.com/apache/cordova-plugin-file) is (mainly) the API that was meant to become the [HTML5 File API](http://www.w3.org/TR/FileAPI/); compared to the [Node.js fs module](https://nodejs.org/dist/latest-v5.x/docs/api/fs.html), it is awful!
@@ -25,12 +27,111 @@ window.plugins.nodefs.init(function(err){
 		return;
 	}
 
+	//After the `init` call, window._fs, window._cacheFs and others become available
 	var fs = window.plugins.nodefs(window._fs);
 	var cacheFs = window.plugins.nodefs(window._cacheFs);
+	// ... initialize an file system you want. I wrote those because they are among the most common ones. See below for more info
+
+	//Example operations:
+
+	//Recursively create folders
+	fs.mkdirp('hello/world', function(err){
+		if (err) throw err;
+
+		//Write a file.
+		fs.writeFile('hello/world/message', 'what\'s up guys?', function(err){
+			if (err) throw err;
+
+			//Read the file's contents, as string
+			fs.readFile('hello/world/message', 'utf8', function(err, messageStr){
+				if (err) throw err;
+
+				console.log('Read from the file system: ' + messageStr);
+			});
+		});
+	});
 });
 ```
 
+### Available file systems
+
+When you call `window.plugins.nodefs.init`, it pre-loads/resolve multiple file systems available in the standard `cordova-plugin-file`. Once they are resolved, they are renamed and attached to an object (`window`, by default)
+
+See the [available storage directories](https://github.com/apache/cordova-plugin-file#where-to-store-files), [their layouts and their read/write capabilities](https://github.com/apache/cordova-plugin-file#file-system-layouts) in `cordova-plugin-file`. Here is how they are renamed:
+
+<table>
+	<thead>
+		<tr>
+			<th>cordova.file.* name</th>
+			<th>Node-like FS name</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>cordova.file.applicationDirectory</td>
+			<td>\_appFs</td>
+		</tr>
+		<tr>
+			<td>cordova.file.applicationStorageDirectory</td>
+			<td>\_appStorageFs</td>
+		</tr>
+		<tr>
+			<td>cordova.file.dataDirectory</td>
+			<td>\_fs</td>
+		</tr>
+		<tr>
+			<td>cordova.file.cacheDirectory</td>
+			<td>\_cacheFs</td>
+		</tr>
+		<tr>
+			<td>cordova.file.externalApplicationStorageDirectory</td>
+			<td>\_externalAppStorageFs</td>
+		</tr>
+		<tr>
+			<td>cordova.file.externalDataDirectory</td>
+			<td>\_externalFs</td>
+		</tr>
+		<tr>
+			<td>cordova.file.externalCacheDirectory</td>
+			<td>\_externalCacheFs</td>
+		</tr>
+		<tr>
+			<td>cordova.file.externalRootDirectory</td>
+			<td>\_externalRootFs</td>
+		</tr>
+		<tr>
+			<td>cordova.file.tempDirectory</td>
+			<td>\_tempFs</td>
+		</tr>
+		<tr>
+			<td>cordova.file.syncedDataDirectory</td>
+			<td>\_syncedFs</td>
+		</tr>
+		<tr>
+			<td>cordova.file.documentsDirectory</td>
+			<td>\_documentsFs</td>
+		</tr>
+		<tr>
+			<td>cordova.file.sharedDirectory</td>
+			<td>\_sharedFs</td>
+		</tr>
+	</tbody>
+</table>
+
+__NOTE:__ Not all of the listed file systems are available on every platform. Availability is described in the `cordova-plugin-file` documentation.
+
 ## API
+
+`window.plugins.nodefs.init(callback, [hostObject])` : initializes and resolves file systems.
+* Function callback(err) : a callback function, receiving error `err` if one occurred
+* Object hostObject : optional. An object to which the resolved file systems will be attached. Defaults to `window`. (This is where the `window._fs` and `window._cacheFs` in the example come from)
+
+`window.plugins.node(fsReference)` : initializes a new file system wrapper, for the file system referred to by `fsReference` (like `_fs`, `cacheFs`, `_syncedFs`, and others, as described above)
+* Returns an FS wrapper object, whose methods are documented below
+
+### The FS wrapper object
+
+__NOTE:__ As of now, methods involving blobs/buffers [are known not to work on Windows platforms](https://github.com/apache/cordova-plugin-file#supported-platforms). Please keep that in mind...
 
 `fs.writeFile(path, data, cb)` : Write data at the given path. Overwrites the file if it already exists.
 * String path : the path at which the file will be written. Note that parent folders must exist before making this call
